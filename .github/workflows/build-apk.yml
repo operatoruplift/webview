@@ -18,17 +18,17 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: 
-            - name: Generate keystore
-        run: |
-          keytool -genkey -v -keystore release.keystore -alias key0 -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Operator Uplift, OU=Dev, O=Operator Uplift, L=San Francisco, ST=CA, C=US"
+      - name: Generate keystore
+        run: keytool -genkey -v -keystore release.keystore -alias key0 -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Operator Uplift, OU=Dev, O=Operator Uplift, L=San Francisco, ST=CA, C=US"
 
       - name: Set keystore environment variables
         run: |
           echo "KEYSTORE_FILE=${{ github.workspace }}/release.keystore" >> $GITHUB_ENV
           echo "KEYSTORE_PASSWORD=android" >> $GITHUB_ENV
           echo "KEY_ALIAS=key0" >> $GITHUB_ENV
-          echo "KEY_PASSWORD=android" >> $GITHUB_ENVGrant execute permission for gradlew
+          echo "KEY_PASSWORD=android" >> $GITHUB_ENV
+
+      - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: Build Release APK
