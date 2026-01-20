@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-        namespace 'com.example.app'
-    compileSdkVersion 34
+    namespace 'com.operatoruplift.app'  4
+            compileSdkVersion 34
     defaultConfig {
-        applicationId "com.example.app"
-        minSdkVersion 21
+        applicationId "com.operatoruplift.app"
+                    minSdkVersion 21
         targetSdkVersion 34
         versionCode 1        
                     versionName "1.0"
