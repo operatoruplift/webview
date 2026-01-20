@@ -1,5 +1,4 @@
-package com.example.app;
-
+package com.operatoruplift.app;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
