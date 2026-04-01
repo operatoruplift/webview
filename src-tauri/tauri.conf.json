@@ -1,0 +1,71 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tauri-apps/tauri/dev/crates/tauri-utils/schema.json",
+  "productName": "Operator Uplift",
+  "version": "0.1.0",
+  "identifier": "com.operatoruplift.app",
+  "build": {
+    "frontendDist": "../dist",
+    "devUrl": "https://www.operatoruplift.com",
+    "beforeDevCommand": "",
+    "beforeBuildCommand": ""
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Operator Uplift",
+        "width": 1280,
+        "height": 800,
+        "resizable": true,
+        "minWidth": 900,
+        "minHeight": 600,
+        "url": "https://www.operatoruplift.com",
+        "userAgent": "OperatorUplift-Desktop/0.1.0",
+        "theme": "Dark",
+        "titleBarStyle": "Visible",
+        "hiddenTitle": false,
+        "center": true,
+        "visible": false,
+        "backgroundColor": [5, 5, 8, 255]
+      }
+    ],
+    "security": {
+      "csp": null
+    },
+    "trayIcon": {
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": true
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "category": "Productivity",
+    "shortDescription": "Operator Uplift Desktop App",
+    "longDescription": "Native desktop application for Operator Uplift - wraps operatoruplift.com in a fast, native window with system tray integration.",
+    "copyright": "© 2026 Operator Uplift",
+    "macOS": {
+      "minimumSystemVersion": "10.15",
+      "exceptionDomain": "operatoruplift.com"
+    },
+    "windows": {
+      "nsis": {
+        "displayLanguageSelector": false,
+        "installMode": "currentUser"
+      }
+    },
+    "linux": {
+      "appimage": {
+        "bundleMediaFramework": true
+      }
+    }
+  },
+  "plugins": {}
+}

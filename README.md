@@ -1,33 +1,47 @@
-This is a template project for Android Studio that allows you to create an android webview application in minutes. You can use it to create a simple app for your website or as a starting point for your HTML5 based android app.
+# Operator Uplift Desktop
 
-### Getting started
+A Tauri 2.0 desktop application that wraps [operatoruplift.com](https://www.operatoruplift.com) in a native window.
 
-[Download](https://github.com/slymax/webview/archive/master.zip) or clone this repository and import it into Android Studio.
+The website includes 38 pages, a full dashboard, real LLM chat, swarm orchestration, and a memory engine. This Tauri shell provides a native desktop experience around the production site.
 
-### Using a remote source
+## Features
 
-If you want to create an app that shows the content of a remote website
+- **Native window** — 1280x800 default, 900x600 minimum, dark theme (#050508)
+- **System tray** — Open / Quit menu, click to restore
+- **macOS integration** — Cmd+W hides to tray, Cmd+Q quits
+- **Desktop detection** — Injects `window.__TAURI__ = true`
+- **No white flash** — Window starts hidden, shown after content loads
+- **Offline fallback** — Shows "No Connection" page when offline
+- **Cross-platform bundles** — macOS .dmg, Windows .exe (NSIS), Linux .AppImage
 
-1. uncomment line **24** in `MainActivity.java` and replace `https://example.com` with your url
+## Prerequisites
 
-	```java
-	mWebView.loadUrl("https://example.com");
-	```
+- [Rust](https://rustup.rs/) (stable)
+- [Tauri CLI](https://v2.tauri.app/start/prerequisites/) v2
 
-2. open the `MyWebViewClient.java` file and replace `example.com` on line **15** with your hostname
+```bash
+cargo install tauri-cli --version "^2"
+```
 
-	```java
-	hostname = "example.com";
-	```
+## Development
 
-### Using a local source
+```bash
+cargo tauri dev
+```
 
-If you want to create a local HTML5 android app
+## Build
 
-1. uncomment line **27** in `MainActivity.java`
+```bash
+cargo tauri build
+```
 
-	```java
-	mWebView.loadUrl("file:///android_asset/index.html");
-	```
+Output bundles are in `src-tauri/target/release/bundle/`.
 
-2. put all your files (including your `index.html`) in the `assets` directory
+## Roadmap
+
+- **Phase 1** (current): Load production URL in webview
+- **Phase 2**: Connect to CORE runtime at `localhost:3001`
+
+## License
+
+[MIT](LICENSE) — Copyright (c) 2026 Operator Uplift
