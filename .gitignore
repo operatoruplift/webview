@@ -34,3 +34,9 @@ output.json
 #NDK
 obj/
 .externalNativeBuild
+
+# Tauri / Rust
+src-tauri/target/
+dist/*.js
+dist/*.css
+dist/assets/
