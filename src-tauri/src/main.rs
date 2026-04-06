@@ -4,8 +4,9 @@
 use tauri::{
     menu::{Menu, MenuItem, PredefinedMenuItem},
     tray::TrayIconBuilder,
-    Emitter, Manager, RunEvent, WebviewUrl, WindowEvent,
+    Listener, Manager, RunEvent, WindowEvent,
 };
+use url::Url;
 
 /// Offline fallback HTML shown when operatoruplift.com is unreachable.
 const OFFLINE_HTML: &str = r#"<!DOCTYPE html>
@@ -55,6 +56,7 @@ const OFFLINE_HTML: &str = r#"<!DOCTYPE html>
 fn main() {
     let app = tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_deep_link::init())
         .setup(|app| {
             // --- System tray: Open / Quit ---
             let open_i = MenuItem::with_id(app, "open", "Open", true, None::<&str>)?;
@@ -90,6 +92,36 @@ fn main() {
                 })
                 .build(app)?;
 
+            // --- Deep link handler: operatoruplift://path → /path on the site ---
+            let deep_handle = app.handle().clone();
+            app.listen("deep-link://new-url", move |event| {
+                let payload = event.payload();
+                if let Ok(urls) = serde_json::from_str::<Vec<String>>(payload) {
+                    for raw in urls {
+                        if let Ok(parsed) = Url::parse(&raw) {
+                            let path = parsed.path().trim_start_matches('/');
+                            let host = parsed.host_str().unwrap_or("");
+                            let route = if !host.is_empty() && path.is_empty() {
+                                format!("/{}", host)
+                            } else if !path.is_empty() {
+                                format!("/{}", path)
+                            } else {
+                                "/".to_string()
+                            };
+                            let nav_url = format!("https://www.operatoruplift.com{}", route);
+                            if let Some(window) = deep_handle.get_webview_window("main") {
+                                let _ = window.eval(&format!(
+                                    "window.location.href = '{}';",
+                                    nav_url
+                                ));
+                                let _ = window.show();
+                                let _ = window.set_focus();
+                            }
+                        }
+                    }
+                }
+            });
+
             // --- Connectivity check & no-white-flash logic ---
             // Window starts hidden (visible: false in config).
             // We check connectivity, inject __TAURI__, then show the window.
@@ -98,11 +130,7 @@ fn main() {
                 let online = check_connectivity().await;
                 if let Some(window) = handle.get_webview_window("main") {
                     if !online {
-                        // Navigate to data URI with offline page
-                        let _ = window.navigate(
-                            WebviewUrl::App("about:blank".into()).into(),
-                        );
-                        // Small delay so navigation starts
+                        // Show offline page via JS injection
                         tokio::time::sleep(std::time::Duration::from_millis(100)).await;
                         let escaped = OFFLINE_HTML.replace('\\', "\\\\").replace('\'', "\\'").replace('\n', "\\n");
                         let _ = window.eval(&format!(
@@ -149,7 +177,6 @@ fn main() {
 
 /// Quick connectivity check — try to reach operatoruplift.com
 async fn check_connectivity() -> bool {
-    // Use a simple TCP connection test to avoid pulling in reqwest
     match tokio::time::timeout(
         std::time::Duration::from_secs(5),
         tokio::net::TcpStream::connect("www.operatoruplift.com:443"),
