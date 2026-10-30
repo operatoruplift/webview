@@ -4,7 +4,7 @@
 use tauri::{
     menu::{Menu, MenuItem, PredefinedMenuItem},
     tray::TrayIconBuilder,
-    Emitter, Manager, RunEvent, WebviewUrl, WindowEvent,
+    Manager, RunEvent, WindowEvent,
 };
 
 /// Offline fallback HTML shown when operatoruplift.com is unreachable.
@@ -98,9 +98,9 @@ fn main() {
                 let online = check_connectivity().await;
                 if let Some(window) = handle.get_webview_window("main") {
                     if !online {
-                        // Navigate to data URI with offline page
+                        // Navigate to a blank page, then write the offline page into it
                         let _ = window.navigate(
-                            WebviewUrl::App("about:blank".into()).into(),
+                            tauri::Url::parse("about:blank").expect("about:blank is a valid URL"),
                         );
                         // Small delay so navigation starts
                         tokio::time::sleep(std::time::Duration::from_millis(100)).await;
